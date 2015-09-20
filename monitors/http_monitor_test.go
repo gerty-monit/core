@@ -1,6 +1,8 @@
 package monitors
 
 import (
+	"net/http"
+	"strconv"
 	"testing"
 	"time"
 )
@@ -29,7 +31,30 @@ func TestShouldFailOnBadStatusCode(t *testing.T) {
 	url := "http://httpstat.us/500"
 	monitor := NewHttpMonitor("Always 500 Monitor", "This monitor should fail because of the 500 response", url)
 	status := monitor.Check()
-	if status != NOK{
+	if status != NOK {
+		t.Fatalf("http monitor should fail")
+	}
+}
+
+func tenBytes(t *testing.T) SuccessChecker {
+	return func(response *http.Response) bool {
+		length := response.Header.Get("Content-Length")
+		bytes, err := strconv.Atoi(length)
+		if err != nil {
+			t.Logf("failed to convert %s to an int", length)
+			return false
+		} else {
+			return bytes == 10
+		}
+	}
+}
+
+func TestCustomSuccessChecker(t *testing.T) {
+	url := "http://httpbin.org/bytes/10"
+	opts := HttpMonitorOptions{Successful: tenBytes(t)}
+	monitor := NewHttpMonitorWithOptions("Always 10 Bytes", "This monitor should if content length is different from 10", url, &opts)
+	status := monitor.Check()
+	if status != OK {
 		t.Fatalf("http monitor should fail")
 	}
 }

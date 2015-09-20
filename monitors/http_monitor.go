@@ -1,11 +1,13 @@
 package monitors
 
 import (
+	util "github.com/gerty-monit/core/util"
 	"log"
 	"net/http"
 	"time"
-  util "github.com/gerty-monit/core/util"
 )
+
+type SuccessChecker func(*http.Response) bool
 
 type HttpMonitor struct {
 	title       string
@@ -16,25 +18,49 @@ type HttpMonitor struct {
 }
 
 type HttpMonitorOptions struct {
-	Checks  int
-	Method  string
-	Cookies []http.Cookie
-	Header  http.Header
-	Timeout time.Duration
+	Checks     int
+	Method     string
+	Cookies    []http.Cookie
+	Header     http.Header
+	Timeout    time.Duration
+	Successful SuccessChecker
 }
 
 var DefaultHttpMonitorOptions = HttpMonitorOptions{
-	Checks:  5,
-	Method:  "GET",
-	Cookies: []http.Cookie{},
-	Header:  http.Header{},
-	Timeout: 10 * time.Second,
+	Checks:     5,
+	Method:     "GET",
+	Cookies:    []http.Cookie{},
+	Header:     http.Header{},
+	Timeout:    10 * time.Second,
+	Successful: defaultSuccessChecker,
 }
 
-func NewHttpMonitorWithOptions(title, description, url string, opts *HttpMonitorOptions) *HttpMonitor {
-	if opts == nil {
-		opts = &DefaultHttpMonitorOptions
+func mergeHttpOpts(given *HttpMonitorOptions) *HttpMonitorOptions {
+	if given == nil {
+		return &DefaultHttpMonitorOptions
 	}
+
+	if given.Checks <= 0 {
+		given.Checks = DefaultHttpMonitorOptions.Checks
+	}
+
+	if len(given.Method) <= 0 {
+		given.Method = DefaultHttpMonitorOptions.Method
+	}
+
+	if given.Timeout <= 0 {
+		given.Timeout = DefaultHttpMonitorOptions.Timeout
+	}
+
+	if given.Successful == nil {
+		given.Successful = DefaultHttpMonitorOptions.Successful
+	}
+
+	return given
+}
+
+func NewHttpMonitorWithOptions(title, description, url string, _opts *HttpMonitorOptions) *HttpMonitor {
+	opts := mergeHttpOpts(_opts)
 	buffer := util.NewCircularBuffer(opts.Checks)
 	return &HttpMonitor{title, description, url, buffer, opts}
 }
@@ -43,8 +69,8 @@ func NewHttpMonitor(title, description, url string) *HttpMonitor {
 	return NewHttpMonitorWithOptions(title, description, url, nil)
 }
 
-func ok(status int) bool {
-	return status >= 200 && status < 400
+func defaultSuccessChecker(response *http.Response) bool {
+	return response.StatusCode >= 200 && response.StatusCode < 400
 }
 
 func addHeader(request *http.Request, header *http.Header) {
@@ -75,7 +101,7 @@ func (monitor *HttpMonitor) Check() int {
 		return NOK
 	}
 
-	if ok(resp.StatusCode) {
+	if monitor.opts.Successful(resp) {
 		monitor.buffer.Append(OK)
 		return OK
 	} else {

@@ -2,10 +2,10 @@ package monitors
 
 import (
 	"fmt"
+	util "github.com/gerty-monit/core/util"
 	"log"
 	"net"
 	"time"
-  util "github.com/gerty-monit/core/util"
 )
 
 type TcpMonitor struct {
@@ -27,10 +27,24 @@ var DefaultTcpMonitorOptions = TcpMonitorOptions{
 	Timeout: 10 * time.Second,
 }
 
-func NewTcpMonitorWithOptions(title, description, host string, port int, opts *TcpMonitorOptions) *TcpMonitor {
-	if opts == nil {
-		opts = &DefaultTcpMonitorOptions
+func mergeTcpOpts(given *TcpMonitorOptions) *TcpMonitorOptions {
+	if given == nil {
+		return &DefaultTcpMonitorOptions
 	}
+
+	if given.Checks <= 0 {
+		given.Checks = DefaultTcpMonitorOptions.Checks
+	}
+
+	if given.Timeout <= 0 {
+		given.Timeout = DefaultTcpMonitorOptions.Timeout
+	}
+
+	return given
+}
+
+func NewTcpMonitorWithOptions(title, description, host string, port int, _opts *TcpMonitorOptions) *TcpMonitor {
+	opts := mergeTcpOpts(_opts)
 	buffer := util.NewCircularBuffer(opts.Checks)
 	return &TcpMonitor{title, description, host, port, buffer, opts}
 }
