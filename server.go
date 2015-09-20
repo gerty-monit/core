@@ -1,7 +1,6 @@
 package gerty
 
 import (
-	"encoding/json"
 	"fmt"
 	m "github.com/gerty-monit/core/monitors"
 	"github.com/gin-gonic/gin"
@@ -11,6 +10,11 @@ import (
 
 type GertyServer struct {
 	Monitors []m.Monitor
+}
+
+type MonitorJson struct {
+	Name   string `json:"name"`
+	Values []int  `json:"values"`
 }
 
 func HomePage(monitors []m.Monitor) func(*gin.Context) {
@@ -24,15 +28,11 @@ func HomePage(monitors []m.Monitor) func(*gin.Context) {
 
 func MonitorApi(monitors []m.Monitor) func(*gin.Context) {
 	return func(c *gin.Context) {
-		c.Writer.Header().Set("Content-Type", "application/json")
-		payload, err := json.Marshal(&monitors)
-		if err != nil {
-			msg := "error generating json deck"
-			log.Printf(msg)
-			c.JSON(500, msg)
-		} else {
-			c.JSON(200, payload)
-		}
+    data := []MonitorJson{} 
+    for _, monit := range monitors {
+      data = append(data, MonitorJson{monit.Name(), monit.Values()})
+    }
+		c.JSON(200, data)
 	}
 }
 
