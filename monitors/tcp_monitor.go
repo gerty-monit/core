@@ -39,7 +39,7 @@ func NewTcpMonitor(title, description, host string, port int) *TcpMonitor {
 	return NewTcpMonitorWithOptions(title, description, host, port, nil)
 }
 
-func (monitor *TcpMonitor) Check() bool {
+func (monitor *TcpMonitor) Check() int {
 	log.Printf("checking monitor %s", monitor.Name())
 	address := fmt.Sprintf("%s:%d", monitor.host, monitor.port)
 	conn, err := net.DialTimeout("tcp", address, monitor.opts.Timeout)
@@ -47,11 +47,11 @@ func (monitor *TcpMonitor) Check() bool {
 	if err == nil {
 		defer conn.Close()
 		monitor.buffer.Append(OK)
-		return true
+		return OK
 	} else {
 		log.Printf("tcp monitor check failed, error: %v", err)
 		monitor.buffer.Append(NOK)
-		return false
+		return NOK
 	}
 }
 

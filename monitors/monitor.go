@@ -12,7 +12,7 @@ type Monitor interface {
 }
 
 type Stater interface {
-	Check() bool
+	Check() int
 	Values() []int
 }
 

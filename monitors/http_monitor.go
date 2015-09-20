@@ -59,7 +59,7 @@ func addCookies(request *http.Request, cookies *[]http.Cookie) {
 	}
 }
 
-func (monitor *HttpMonitor) Check() bool {
+func (monitor *HttpMonitor) Check() int {
 	log.Printf("checking monitor %s", monitor.Name())
 	client := http.Client{Timeout: monitor.opts.Timeout}
 	req, err := http.NewRequest(monitor.opts.Method, monitor.url, nil /*body*/)
@@ -72,16 +72,16 @@ func (monitor *HttpMonitor) Check() bool {
 	if err != nil {
 		log.Printf("http monitor check failed with error: %v", err)
 		monitor.buffer.Append(NOK)
-		return false
+		return NOK
 	}
 
 	if ok(resp.StatusCode) {
 		monitor.buffer.Append(OK)
-		return true
+		return OK
 	} else {
 		log.Printf("http monitor check failed, status = %d", resp.StatusCode)
 		monitor.buffer.Append(NOK)
-		return false
+		return NOK
 	}
 }
 
