@@ -1,7 +1,7 @@
 package gerty
 
 import (
-	"github.com/fernandezpablo85/gerty/monitors"
+	"github.com/gerty-monit/core/monitors"
 	"io/ioutil"
 	"testing"
 )

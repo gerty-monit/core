@@ -1,9 +1,7 @@
 package monitors
 
-type Status int
-
 const (
-	UN Status = iota
+	UN = iota
 	OK
 	NOK
 )
@@ -15,7 +13,7 @@ type Monitor interface {
 
 type Stater interface {
 	Check() bool
-	Values() []Status
+	Values() []int
 }
 
 type Describer interface {

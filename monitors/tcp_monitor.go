@@ -5,6 +5,7 @@ import (
 	"log"
 	"net"
 	"time"
+  util "github.com/gerty-monit/core/util"
 )
 
 type TcpMonitor struct {
@@ -12,7 +13,7 @@ type TcpMonitor struct {
 	description string
 	host        string
 	port        int
-	buffer      CircularBuffer
+	buffer      util.CircularBuffer
 	opts        *TcpMonitorOptions
 }
 
@@ -30,7 +31,7 @@ func NewTcpMonitorWithOptions(title, description, host string, port int, opts *T
 	if opts == nil {
 		opts = &DefaultTcpMonitorOptions
 	}
-	buffer := NewCircularBuffer(opts.Checks)
+	buffer := util.NewCircularBuffer(opts.Checks)
 	return &TcpMonitor{title, description, host, port, buffer, opts}
 }
 
@@ -45,16 +46,16 @@ func (monitor *TcpMonitor) Check() bool {
 
 	if err == nil {
 		defer conn.Close()
-		monitor.buffer.Append(true)
+		monitor.buffer.Append(OK)
 		return true
 	} else {
 		log.Printf("tcp monitor check failed, error: %v", err)
-		monitor.buffer.Append(false)
+		monitor.buffer.Append(NOK)
 		return false
 	}
 }
 
-func (monitor *TcpMonitor) Values() []Status {
+func (monitor *TcpMonitor) Values() []int {
 	return monitor.buffer.Values
 }
 

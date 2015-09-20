@@ -4,13 +4,14 @@ import (
 	"log"
 	"net/http"
 	"time"
+  util "github.com/gerty-monit/core/util"
 )
 
 type HttpMonitor struct {
 	title       string
 	description string
 	url         string
-	buffer      CircularBuffer
+	buffer      util.CircularBuffer
 	opts        *HttpMonitorOptions
 }
 
@@ -34,7 +35,7 @@ func NewHttpMonitorWithOptions(title, description, url string, opts *HttpMonitor
 	if opts == nil {
 		opts = &DefaultHttpMonitorOptions
 	}
-	buffer := NewCircularBuffer(opts.Checks)
+	buffer := util.NewCircularBuffer(opts.Checks)
 	return &HttpMonitor{title, description, url, buffer, opts}
 }
 
@@ -70,21 +71,21 @@ func (monitor *HttpMonitor) Check() bool {
 	resp, err := client.Do(req)
 	if err != nil {
 		log.Printf("http monitor check failed with error: %v", err)
-		monitor.buffer.Append(false)
+		monitor.buffer.Append(NOK)
 		return false
 	}
 
 	if ok(resp.StatusCode) {
-		monitor.buffer.Append(true)
+		monitor.buffer.Append(OK)
 		return true
 	} else {
 		log.Printf("http monitor check failed, status = %d", resp.StatusCode)
-		monitor.buffer.Append(false)
+		monitor.buffer.Append(NOK)
 		return false
 	}
 }
 
-func (monitor *HttpMonitor) Values() []Status {
+func (monitor *HttpMonitor) Values() []int {
 	return monitor.buffer.Values
 }
 
