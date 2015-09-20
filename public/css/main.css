@@ -1,0 +1,10 @@
+.card ol {
+  padding-left: 0px;
+  margin: 0px;
+  list-style: none;
+}
+
+.card ol li {
+  display: inline;
+  margin: 0px 5px;
+}

@@ -1,0 +1,21 @@
+{{ define "card"}}
+<div class="card {{ if AllOk . }} teal {{ else }} red {{ end }} darken-2">
+  <div class="card-content white-text">
+    <ol>
+      {{ range $idx, $el := .Values}}
+        <li><i class="material-icons {{if eq $el 1 }} teal text-teal teal-text text-accent-3 {{ else if eq $el 2 }} red accent-1 red-text text-accent-5 {{else}} hide {{end}}">stop</i></li>
+      {{ end }}
+    </ol>
+    {{ if AllOk . }}
+      <span class="card-title">{{.Name}}</span>
+    {{ else }}
+      <span class="card-title activator white-text text-darken-4">{{.Name}}</span>
+    {{ end }}
+    <p> {{.Description }}</p>
+  </div>
+  <div class="card-reveal red lighten-4">
+    <span class="card-title black-text text-darken-4"><i class="material-icons medium right">close</i></span>
+    <p>{{.Description}}</p>
+  </div>
+</div>
+{{end}}

@@ -1,0 +1,39 @@
+{{define "index"}}
+<!DOCTYPE html>
+<html>
+<head>
+  <link type="text/css" rel="stylesheet" href="public/css/materialize.css"  media="screen,projection"/>
+  <link type="text/css" rel="stylesheet" href="public/css/main.css"  media="screen,projection"/>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link rel="apple-touch-icon" href="//icons.iconarchive.com/icons/graphicloads/medical-health/256/heart-beat-icon.png" />
+  <link rel="apple-touch-icon-precomposed" href="//icons.iconarchive.com/icons/graphicloads/medical-health/256/heart-beat-icon.png" />
+  <title>ICU</title>
+</head>
+
+<body>
+  <div class="hero">
+    <div class="container" style="width:80%">
+      <div class="section">
+        <div class="row center">
+          <h3 class="light-blue-text text-darken-4 light header">Service Status</h3>
+        </div>
+        <div class="row">
+        {{range $key, $card := .deck}}
+          <div class="col s12 m6" data-sr="enter left, move 100px, over 0.5s, wait 0.2s">
+            {{ template "card" $card }}
+          </div>
+        {{end}}
+        </div>
+      </div>
+    </div>
+  </div>
+  <script type="text/javascript" src="public/js/jquery.js"></script>
+  <script type="text/javascript" src="public/js/materialize.js"></script>
+  <script type="text/javascript" src="public/js/scrollReveal.js"></script>
+  <script>
+    window.sr = new scrollReveal();
+  </script>
+</body>
+</html>
+{{end}}
