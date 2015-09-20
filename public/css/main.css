@@ -8,3 +8,24 @@
   display: inline;
   margin: 0px 5px;
 }
+
+.card .dot {
+  text-indent: 100%;
+  display: inline-block;
+  width: 15px;
+  height: 15px;
+  border-radius: 100%;
+  overflow: hidden;
+}
+.pulse {
+  animation: 2s green-pulse infinite;
+}
+
+@keyframes green-pulse {
+  0% {
+    box-shadow: 0 0 0 0 #e8f5e9;
+  }
+  50% {
+    box-shadow: 0 0 0 20px rgba(185,246,202, 0);
+  }
+}

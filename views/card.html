@@ -3,7 +3,9 @@
   <div class="card-content white-text">
     <ol>
       {{ range $idx, $el := .Values}}
-        <li><i class="material-icons {{if eq $el 1 }} teal text-teal teal-text text-accent-3 {{ else if eq $el 2 }} red accent-1 red-text text-accent-5 {{else}} hide {{end}}">stop</i></li>
+        <li class="{{if eq $el 0}} hide {{end}}">
+          <span class="dot {{if eq $el 1 }} green accent-3 {{ else if eq $el 2 }} red pulse accent-1 {{end}}">dot</span>
+        </li>
       {{ end }}
     </ol>
     {{ if AllOk . }}
