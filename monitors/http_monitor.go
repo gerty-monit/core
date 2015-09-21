@@ -2,6 +2,7 @@ package monitors
 
 import (
 	util "github.com/gerty-monit/core/util"
+	"io"
 	"log"
 	"net/http"
 	"time"
@@ -24,6 +25,7 @@ type HttpMonitorOptions struct {
 	Header     http.Header
 	Timeout    time.Duration
 	Successful SuccessChecker
+	Body       io.Reader
 }
 
 var DefaultHttpMonitorOptions = HttpMonitorOptions{
@@ -33,6 +35,7 @@ var DefaultHttpMonitorOptions = HttpMonitorOptions{
 	Header:     http.Header{},
 	Timeout:    10 * time.Second,
 	Successful: defaultSuccessChecker,
+	Body:       nil,
 }
 
 func mergeHttpOpts(given *HttpMonitorOptions) *HttpMonitorOptions {
@@ -88,7 +91,7 @@ func addCookies(request *http.Request, cookies *[]http.Cookie) {
 func (monitor *HttpMonitor) Check() int {
 	log.Printf("checking monitor %s", monitor.Name())
 	client := http.Client{Timeout: monitor.opts.Timeout}
-	req, err := http.NewRequest(monitor.opts.Method, monitor.url, nil /*body*/)
+	req, err := http.NewRequest(monitor.opts.Method, monitor.url, monitor.opts.Body)
 	if err != nil {
 		log.Fatalf("can't ping malformed URL: %s", monitor.url)
 	}

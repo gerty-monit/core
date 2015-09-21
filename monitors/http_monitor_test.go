@@ -1,6 +1,9 @@
 package monitors
 
 import (
+	"bytes"
+	"encoding/json"
+	"io/ioutil"
 	"net/http"
 	"strconv"
 	"testing"
@@ -52,9 +55,43 @@ func tenBytes(t *testing.T) SuccessChecker {
 func TestCustomSuccessChecker(t *testing.T) {
 	url := "http://httpbin.org/bytes/10"
 	opts := HttpMonitorOptions{Successful: tenBytes(t)}
-	monitor := NewHttpMonitorWithOptions("Always 10 Bytes", "This monitor should if content length is different from 10", url, &opts)
+	monitor := NewHttpMonitorWithOptions("Always 10 Bytes", "This monitor should fail if content length is different from 10", url, &opts)
 	status := monitor.Check()
 	if status != OK {
-		t.Fatalf("http monitor should fail")
+		t.Fatalf("http monitor should not fail")
+	}
+}
+
+func checkBodyHasData(value string) SuccessChecker {
+	return func(response *http.Response) bool {
+		bs, err := ioutil.ReadAll(response.Body)
+		if err != nil {
+			return false
+		}
+		var data struct {
+			Data string `json:"data"`
+		}
+		err = json.Unmarshal(bs, &data)
+		if err != nil {
+			return false
+		} else {
+			return data.Data == value
+		}
+	}
+}
+
+func TestRequestWithBody(t *testing.T) {
+	url := "http://httpbin.org/post"
+	bodyString := "request-body"
+	body := bytes.NewBufferString(bodyString)
+	opts := HttpMonitorOptions{
+		Method:     "POST",
+		Body:       body,
+		Successful: checkBodyHasData(bodyString),
+	}
+	monitor := NewHttpMonitorWithOptions("Post with Body", "This monitor should send a POST with body", url, &opts)
+	status := monitor.Check()
+	if status != OK {
+		t.Fatalf("http monitor should not fail")
 	}
 }
