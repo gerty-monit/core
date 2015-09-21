@@ -5,6 +5,7 @@ import (
 	"io"
 	"log"
 	"net/http"
+	"strings"
 	"time"
 )
 
@@ -25,7 +26,7 @@ type HttpMonitorOptions struct {
 	Header     http.Header
 	Timeout    time.Duration
 	Successful SuccessChecker
-	Body       io.Reader
+	Body       string
 }
 
 var DefaultHttpMonitorOptions = HttpMonitorOptions{
@@ -35,7 +36,7 @@ var DefaultHttpMonitorOptions = HttpMonitorOptions{
 	Header:     http.Header{},
 	Timeout:    10 * time.Second,
 	Successful: defaultSuccessChecker,
-	Body:       nil,
+	Body:       "",
 }
 
 func mergeHttpOpts(given *HttpMonitorOptions) *HttpMonitorOptions {
@@ -91,7 +92,12 @@ func addCookies(request *http.Request, cookies *[]http.Cookie) {
 func (monitor *HttpMonitor) Check() int {
 	log.Printf("checking monitor %s", monitor.Name())
 	client := http.Client{Timeout: monitor.opts.Timeout}
-	req, err := http.NewRequest(monitor.opts.Method, monitor.url, monitor.opts.Body)
+
+	var body io.Reader = nil
+	if len(monitor.opts.Body) > 0 {
+		body = strings.NewReader(monitor.opts.Body)
+	}
+	req, err := http.NewRequest(monitor.opts.Method, monitor.url, body)
 	if err != nil {
 		log.Fatalf("can't ping malformed URL: %s", monitor.url)
 	}

@@ -1,7 +1,6 @@
 package monitors
 
 import (
-	"bytes"
 	"encoding/json"
 	"io/ioutil"
 	"net/http"
@@ -83,10 +82,9 @@ func checkBodyHasData(value string) SuccessChecker {
 func TestRequestWithBody(t *testing.T) {
 	url := "http://httpbin.org/post"
 	bodyString := "request-body"
-	body := bytes.NewBufferString(bodyString)
 	opts := HttpMonitorOptions{
 		Method:     "POST",
-		Body:       body,
+		Body:       bodyString,
 		Successful: checkBodyHasData(bodyString),
 	}
 	monitor := NewHttpMonitorWithOptions("Post with Body", "This monitor should send a POST with body", url, &opts)
