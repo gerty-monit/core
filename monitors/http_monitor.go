@@ -97,6 +97,7 @@ func (monitor *HttpMonitor) Check() int {
 	}
 
 	addHeader(req, &monitor.opts.Header)
+	addCookies(req, &monitor.opts.Cookies)
 	resp, err := client.Do(req)
 	if err != nil {
 		log.Printf("http monitor check failed with error: %v", err)
