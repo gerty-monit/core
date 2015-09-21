@@ -106,7 +106,7 @@ func (monitor *HttpMonitor) Check() int {
 	addCookies(req, &monitor.opts.Cookies)
 	resp, err := client.Do(req)
 	if err != nil {
-		log.Printf("http monitor check failed with error: %v", err)
+		log.Printf("%s monitor check failed with error: %v", monitor.Name(), err)
 		monitor.buffer.Append(NOK)
 		return NOK
 	}
@@ -115,7 +115,7 @@ func (monitor *HttpMonitor) Check() int {
 		monitor.buffer.Append(OK)
 		return OK
 	} else {
-		log.Printf("http monitor check failed, status = %d", resp.StatusCode)
+		log.Printf("%s monitor check failed, status = %d", monitor.Name(), resp.StatusCode)
 		monitor.buffer.Append(NOK)
 		return NOK
 	}
