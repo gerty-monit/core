@@ -7,7 +7,4 @@ install:
 	@godep restore
 
 test:
-	@go test  ./...
-
-run:
-	@go run *.go
+	@go test ./...
