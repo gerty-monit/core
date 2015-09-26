@@ -20,3 +20,8 @@ type Describer interface {
 	Name() string
 	Description() string
 }
+
+type Group struct {
+	Name     string
+	Monitors []Monitor
+}

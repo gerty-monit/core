@@ -17,6 +17,12 @@
   border-radius: 100%;
   overflow: hidden;
 }
+
+.card-title.card-title-group {
+  letter-spacing: .2em;
+  text-transform:uppercase;
+}
+
 .pulse {
   animation: 2s green-pulse infinite;
 }

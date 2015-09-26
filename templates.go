@@ -34,7 +34,7 @@ func AllOk(monitor m.Monitor) bool {
 	return allOk
 }
 
-func RenderIndex(deck []m.Monitor, w io.Writer) error {
-	data := map[string]interface{}{"deck": deck}
+func RenderIndex(groups []m.Group, w io.Writer) error {
+	data := map[string]interface{}{"groups": groups}
 	return ts.ExecuteTemplate(w, "index", data)
 }

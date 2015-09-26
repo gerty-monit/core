@@ -21,7 +21,7 @@ func TestShouldPingValidUrl(t *testing.T) {
 func TestShouldFailOnTimeout(t *testing.T) {
 	// non-routeable IP address.
 	url := "http://10.255.255.1/resource"
-	opts := HttpMonitorOptions{Checks: 5, Method: "GET", Timeout: 1 * time.Second}
+	opts := HttpMonitorOptions{Checks: 5, Method: "GET", Timeout: 10 * time.Millisecond}
 	monitor := NewHttpMonitorWithOptions("Timeout Monitor", "This monitor should timeout", url, &opts)
 	status := monitor.Check()
 	if status != NOK {

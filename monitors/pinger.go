@@ -7,21 +7,25 @@ import (
 
 var interval = 30 * time.Second
 
-func Ping(monitors []Monitor) chan interface{} {
+func Ping(groups []Group) chan interface{} {
 	ticker := time.NewTicker(interval)
 	quit := make(chan interface{})
 	go func() {
 		for {
 			select {
 			case <-ticker.C:
-				refresh(monitors)
+				for _, g := range groups {
+					refresh(g.Monitors)
+				}
 			case <-quit:
 				ticker.Stop()
 				return
 			}
 		}
 	}()
-	refresh(monitors)
+	for _, g := range groups {
+		refresh(g.Monitors)
+	}
 	return quit
 }
 
