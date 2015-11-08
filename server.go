@@ -1,10 +1,11 @@
 package gerty
 
 import (
+	"encoding/json"
 	m "github.com/gerty-monit/core/monitors"
-	"github.com/gin-gonic/gin"
 	"io/ioutil"
 	"log"
+	"net/http"
 	"os"
 )
 
@@ -30,15 +31,15 @@ type TileValue struct {
 
 var appPath = os.Getenv("GOPATH") + "/src/github.com/gerty-monit/core"
 
-func HomePage(c *gin.Context) {
+func HomePage(w http.ResponseWriter, r *http.Request) {
 	bytes, err := ioutil.ReadFile(appPath + "/views/index.html")
 	if err != nil {
 		log.Panicf("error reading index.html: %v", err)
-		c.AbortWithError(500, err)
+		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
-
-	c.Data(200, "text/html", bytes)
+	w.WriteHeader(200)
+	w.Write(bytes)
 }
 
 func createTileValues(checks []m.ValueWithTimestamp) []TileValue {
@@ -49,8 +50,8 @@ func createTileValues(checks []m.ValueWithTimestamp) []TileValue {
 	return values
 }
 
-func MonitorApi(s *GertyServer) func(*gin.Context) {
-	return func(c *gin.Context) {
+func MonitorApi(s *GertyServer) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
 		data := []GroupJson{}
 		for _, group := range s.Groups {
 			ms := []TileJson{}
@@ -60,20 +61,23 @@ func MonitorApi(s *GertyServer) func(*gin.Context) {
 			}
 			data = append(data, GroupJson{group.Name, ms})
 		}
-		c.JSON(200, data)
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.WriteHeader(200)
+		bytes, _ := json.Marshal(data)
+		w.Write(bytes)
 	}
 }
 
 func (server *GertyServer) ListenAndServe(address string) {
-	router := gin.Default()
 	m.Ping(server.Groups)
+	mux := http.NewServeMux()
 
 	statics := os.Getenv("GOPATH") + "/src/github.com/gerty-monit/core/public"
-	router.Static("/public", statics)
+	fs := http.FileServer(http.Dir(statics))
+	mux.Handle("/assets/", http.StripPrefix("/assets/", fs))
 
-	router.GET("/api/v1/monitors", MonitorApi(server))
-	router.GET("/", HomePage)
+	mux.HandleFunc("/api/v1/monitors", MonitorApi(server))
+	mux.HandleFunc("/", HomePage)
 
-	log.Printf("server started on address %s", address)
-	router.Run(address)
+	http.ListenAndServe(address, mux)
 }
