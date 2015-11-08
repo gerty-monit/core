@@ -25,14 +25,14 @@ class Tile extends React.Component<Model.Tile, any> {
     super()
   }
 
-  private createTile(value: Model.ValueWithTimestamp): JSX.Element {
-    const time = moment.unix(value.timestamp);
-    const ago = time.fromNow();
+  private createTile(value: Model.ValueWithTimestamp, index: number): JSX.Element {
+    const ago = moment.unix(value.timestamp).fromNow();
+    const key = 'dot-' + index;
     var className = 'dot tooltipped new-item'
     if (value.value === 0) className += " hide";
     if (value.value === 1) className += " green accent-3";
     if (value.value === 2) className += " red pulse accent-1";
-    return <li key={time.unix() }><span className={className} title={ago} > dot </span></li>
+    return <li key={ key }><span className={className} title={ago} > dot </span></li>
   }
 
   render() {
