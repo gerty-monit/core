@@ -1,9 +1,9 @@
 package gerty
 
 import (
-	"fmt"
 	m "github.com/gerty-monit/core/monitors"
 	"github.com/gin-gonic/gin"
+	"io/ioutil"
 	"log"
 	"os"
 )
@@ -13,31 +13,50 @@ type GertyServer struct {
 }
 
 type GroupJson struct {
-	Name     string        `json:"name"`
-	Monitors []MonitorJson `json:"monitors"`
+	Name  string     `json:"name"`
+	Tiles []TileJson `json:"tiles"`
 }
 
-type MonitorJson struct {
-	Name   string `json:"name"`
-	Values []int  `json:"values"`
+type TileJson struct {
+	Title       string      `json:"title"`
+	Description string      `json:"description"`
+	Values      []TileValue `json:"values"`
 }
 
-func HomePage(s *GertyServer) func(*gin.Context) {
-	return func(c *gin.Context) {
-		err := RenderIndex(s.Groups, c.Writer)
-		if err != nil {
-			fmt.Fprintf(c.Writer, "error %v", err)
-		}
+type TileValue struct {
+	Value     int   `json:"value"`
+	Timestamp int64 `json:"timestamp"`
+}
+
+var appPath = os.Getenv("GOPATH") + "/src/github.com/gerty-monit/core"
+
+func HomePage(c *gin.Context) {
+	bytes, err := ioutil.ReadFile(appPath + "/views/index.html")
+	if err != nil {
+		log.Panicf("error reading index.html: %v", err)
+		c.AbortWithError(500, err)
+		return
 	}
+
+	c.Data(200, "text/html", bytes)
+}
+
+func createTileValues(checks []m.ValueWithTimestamp) []TileValue {
+	values := []TileValue{}
+	for i := range checks {
+		values = append(values, TileValue{checks[i].Value, checks[i].Timestamp})
+	}
+	return values
 }
 
 func MonitorApi(s *GertyServer) func(*gin.Context) {
 	return func(c *gin.Context) {
 		data := []GroupJson{}
 		for _, group := range s.Groups {
-			ms := []MonitorJson{}
+			ms := []TileJson{}
 			for _, monitor := range group.Monitors {
-				ms = append(ms, MonitorJson{monitor.Name(), monitor.Values()})
+				tileValues := createTileValues(monitor.Values())
+				ms = append(ms, TileJson{monitor.Name(), monitor.Description(), tileValues})
 			}
 			data = append(data, GroupJson{group.Name, ms})
 		}
@@ -53,7 +72,7 @@ func (server *GertyServer) ListenAndServe(address string) {
 	router.Static("/public", statics)
 
 	router.GET("/api/v1/monitors", MonitorApi(server))
-	router.GET("/", HomePage(server))
+	router.GET("/", HomePage)
 
 	log.Printf("server started on address %s", address)
 	router.Run(address)

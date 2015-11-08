@@ -2,7 +2,6 @@ package monitors
 
 import (
 	"fmt"
-	util "github.com/gerty-monit/core/util"
 	"log"
 	"net"
 	"time"
@@ -13,7 +12,7 @@ type TcpMonitor struct {
 	description string
 	host        string
 	port        int
-	buffer      util.CircularBuffer
+	buffer      CircularBuffer
 	opts        *TcpMonitorOptions
 }
 
@@ -45,7 +44,7 @@ func mergeTcpOpts(given *TcpMonitorOptions) *TcpMonitorOptions {
 
 func NewTcpMonitorWithOptions(title, description, host string, port int, _opts *TcpMonitorOptions) *TcpMonitor {
 	opts := mergeTcpOpts(_opts)
-	buffer := util.NewCircularBuffer(opts.Checks)
+	buffer := NewCircularBuffer(opts.Checks)
 	return &TcpMonitor{title, description, host, port, buffer, opts}
 }
 
@@ -69,7 +68,7 @@ func (monitor *TcpMonitor) Check() int {
 	}
 }
 
-func (monitor *TcpMonitor) Values() []int {
+func (monitor *TcpMonitor) Values() []ValueWithTimestamp {
 	return monitor.buffer.Values
 }
 

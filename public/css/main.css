@@ -1,3 +1,7 @@
+.container {
+  width: 80%;
+}
+
 .card ol {
   padding-left: 0px;
   margin: 0px;
@@ -25,6 +29,10 @@
 
 .pulse {
   animation: 2s green-pulse infinite;
+}
+
+.new-item {
+  animation: 1s green-pulse;
 }
 
 @keyframes green-pulse {

@@ -13,7 +13,7 @@ type Monitor interface {
 
 type Stater interface {
 	Check() int
-	Values() []int
+	Values() []ValueWithTimestamp
 }
 
 type Describer interface {

@@ -1,7 +1,6 @@
 package monitors
 
 import (
-	util "github.com/gerty-monit/core/util"
 	"io"
 	"log"
 	"net/http"
@@ -15,7 +14,7 @@ type HttpMonitor struct {
 	title       string
 	description string
 	url         string
-	buffer      util.CircularBuffer
+	buffer      CircularBuffer
 	opts        *HttpMonitorOptions
 }
 
@@ -65,7 +64,7 @@ func mergeHttpOpts(given *HttpMonitorOptions) *HttpMonitorOptions {
 
 func NewHttpMonitorWithOptions(title, description, url string, _opts *HttpMonitorOptions) *HttpMonitor {
 	opts := mergeHttpOpts(_opts)
-	buffer := util.NewCircularBuffer(opts.Checks)
+	buffer := NewCircularBuffer(opts.Checks)
 	return &HttpMonitor{title, description, url, buffer, opts}
 }
 
@@ -121,7 +120,7 @@ func (monitor *HttpMonitor) Check() int {
 	}
 }
 
-func (monitor *HttpMonitor) Values() []int {
+func (monitor *HttpMonitor) Values() []ValueWithTimestamp {
 	return monitor.buffer.Values
 }
 
