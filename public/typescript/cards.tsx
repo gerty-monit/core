@@ -39,9 +39,14 @@ class Tile extends React.Component<Model.Tile, any> {
     const dots = this.props.values
       .sort((a, b) => b.timestamp - a.timestamp)
       .map(this.createTile)
+
+    const failed = this.props.values.filter(it => it.value === 2).length;
+    const allFailed = (failed === this.props.values.length);
+    const tileClass = (allFailed) ? "red darken-2 card" : "teal darken-2 card"
+
     return (
       <div className="col s12 m6 l4">
-        <div className="card teal darken-2">
+        <div className={tileClass}>
           <div className="card-content white-text">
             <ol>
               {dots}

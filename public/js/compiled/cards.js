@@ -38,7 +38,10 @@ var Tile = (function (_super) {
         var dots = this.props.values
             .sort(function (a, b) { return b.timestamp - a.timestamp; })
             .map(this.createTile);
-        return (React.createElement("div", {"className": "col s12 m6 l4"}, React.createElement("div", {"className": "card teal darken-2"}, React.createElement("div", {"className": "card-content white-text"}, React.createElement("ol", null, dots), React.createElement("span", {"className": "card-title"}, this.props.title), React.createElement("p", null, this.props.description)))));
+        var failed = this.props.values.filter(function (it) { return it.value === 2; }).length;
+        var allFailed = (failed === this.props.values.length);
+        var tileClass = (allFailed) ? "red darken-2 card" : "teal darken-2 card";
+        return (React.createElement("div", {"className": "col s12 m6 l4"}, React.createElement("div", {"className": tileClass}, React.createElement("div", {"className": "card-content white-text"}, React.createElement("ol", null, dots), React.createElement("span", {"className": "card-title"}, this.props.title), React.createElement("p", null, this.props.description)))));
     };
     return Tile;
 })(React.Component);
