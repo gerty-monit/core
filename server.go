@@ -9,6 +9,8 @@ import (
 	"os"
 )
 
+var logger = log.New(os.Stdout, "", log.Ldate|log.Ltime|log.Lshortfile)
+
 type GertyServer struct {
 	Groups []m.Group
 }
@@ -34,7 +36,7 @@ var appPath = os.Getenv("GOPATH") + "/src/github.com/gerty-monit/core"
 func HomePage(w http.ResponseWriter, r *http.Request) {
 	bytes, err := ioutil.ReadFile(appPath + "/views/index.html")
 	if err != nil {
-		log.Panicf("error reading index.html: %v", err)
+		logger.Panicf("error reading index.html: %v", err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}

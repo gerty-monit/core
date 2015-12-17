@@ -4,9 +4,12 @@ import (
 	"io"
 	"log"
 	"net/http"
+	"os"
 	"strings"
 	"time"
 )
+
+var logger = log.New(os.Stdout, "", log.Ldate|log.Ltime|log.Lshortfile)
 
 type SuccessChecker func(*http.Response) bool
 
@@ -89,7 +92,7 @@ func addCookies(request *http.Request, cookies *[]http.Cookie) {
 }
 
 func (monitor *HttpMonitor) Check() int {
-	log.Printf("checking monitor %s", monitor.Name())
+	logger.Printf("checking monitor %s", monitor.Name())
 	client := http.Client{Timeout: monitor.opts.Timeout}
 
 	var body io.Reader = nil
@@ -98,14 +101,14 @@ func (monitor *HttpMonitor) Check() int {
 	}
 	req, err := http.NewRequest(monitor.opts.Method, monitor.url, body)
 	if err != nil {
-		log.Fatalf("can't ping malformed URL: %s", monitor.url)
+		logger.Fatalf("can't ping malformed URL: %s", monitor.url)
 	}
 
 	addHeader(req, &monitor.opts.Header)
 	addCookies(req, &monitor.opts.Cookies)
 	resp, err := client.Do(req)
 	if err != nil {
-		log.Printf("%s monitor check failed with error: %v", monitor.Name(), err)
+		logger.Printf("%s monitor check failed with error: %v", monitor.Name(), err)
 		monitor.buffer.Append(NOK)
 		return NOK
 	}
@@ -114,7 +117,7 @@ func (monitor *HttpMonitor) Check() int {
 		monitor.buffer.Append(OK)
 		return OK
 	} else {
-		log.Printf("%s monitor check failed, status = %d", monitor.Name(), resp.StatusCode)
+		logger.Printf("%s monitor check failed, status = %d", monitor.Name(), resp.StatusCode)
 		monitor.buffer.Append(NOK)
 		return NOK
 	}
