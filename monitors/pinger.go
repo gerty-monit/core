@@ -7,15 +7,20 @@ import (
 
 var interval = 30 * time.Second
 
-func Ping(groups []Group) chan interface{} {
+type Monitoreable interface {
+	GetGroups() []Group
+	Failed(Monitor)
+}
+
+func Ping(subject Monitoreable) chan interface{} {
 	ticker := time.NewTicker(interval)
 	quit := make(chan interface{})
 	go func() {
 		for {
 			select {
 			case <-ticker.C:
-				for _, g := range groups {
-					refresh(g.Monitors)
+				for _, g := range subject.GetGroups() {
+					refresh(g.Monitors, subject)
 				}
 			case <-quit:
 				ticker.Stop()
@@ -23,8 +28,8 @@ func Ping(groups []Group) chan interface{} {
 			}
 		}
 	}()
-	for _, g := range groups {
-		refresh(g.Monitors)
+	for _, g := range subject.GetGroups() {
+		refresh(g.Monitors, subject)
 	}
 	return quit
 }
@@ -34,12 +39,15 @@ func check(m Monitor, wg *sync.WaitGroup) {
 	m.Check()
 }
 
-func refresh(monitors []Monitor) {
+func refresh(monitors []Monitor, subject Monitoreable) {
 	ns := len(monitors)
 	var wg sync.WaitGroup
 	wg.Add(ns)
 	for _, m := range monitors {
 		check(m, &wg)
+		if AllFailed(m) {
+			go subject.Failed(m)
+		}
 	}
 	wg.Wait()
 }

@@ -25,3 +25,12 @@ type Group struct {
 	Name     string
 	Monitors []Monitor
 }
+
+func AllFailed(m Monitor) bool {
+	for i := range m.Values() {
+		if m.Values()[i].Value != NOK {
+			return false
+		}
+	}
+	return true
+}

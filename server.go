@@ -2,6 +2,7 @@ package gerty
 
 import (
 	"encoding/json"
+	a "github.com/gerty-monit/core/alarms"
 	m "github.com/gerty-monit/core/monitors"
 	"io/ioutil"
 	"log"
@@ -13,6 +14,22 @@ var logger = log.New(os.Stdout, "", log.Ldate|log.Ltime|log.Lshortfile)
 
 type GertyServer struct {
 	Groups []m.Group
+	Alarms []a.Alarm
+}
+
+func (server GertyServer) GetGroups() []m.Group {
+	return server.Groups
+}
+
+func (server GertyServer) Failed(monitor m.Monitor) {
+	if len(server.Alarms) == 0 {
+		return
+	}
+
+	logger.Printf("monitor %s has failed, notifying errors", monitor.Name())
+	for i, _ := range server.Alarms {
+		server.Alarms[i].NotifyError(monitor)
+	}
 }
 
 type GroupJson struct {
@@ -71,7 +88,7 @@ func MonitorApi(s *GertyServer) http.HandlerFunc {
 }
 
 func (server *GertyServer) ListenAndServe(address string) {
-	m.Ping(server.Groups)
+	m.Ping(server)
 	mux := http.NewServeMux()
 
 	statics := os.Getenv("GOPATH") + "/src/github.com/gerty-monit/core/public"
