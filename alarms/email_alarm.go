@@ -4,12 +4,9 @@ import (
 	"bytes"
 	"github.com/gerty-monit/core/monitors"
 	"html/template"
-	"log"
 	"net/smtp"
 	"os"
 )
-
-var logger = log.New(os.Stdout, "", log.Ldate|log.Ltime|log.Lshortfile)
 
 var templateFile = os.Getenv("GOPATH") + "/src/github.com/gerty-monit/core/alarms/email_alarm.html"
 var tpl = template.Must(template.New("email_alarm.html").ParseFiles(templateFile))
@@ -54,6 +51,6 @@ func (alarm EmailAlarm) NotifyError(monitor monitors.Monitor) {
 	logger.Printf("template generated, sending email to `%s`", address)
 	err = smtp.SendMail(address, auth, alarm.From, []string{to}, buffer.Bytes())
 	if err != nil {
-		logger.Printf("error while seding the alarm email %v", err)
+		logger.Printf("error while sending the alarm email %v", err)
 	}
 }
