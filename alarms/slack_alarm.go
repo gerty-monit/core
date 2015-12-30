@@ -23,6 +23,6 @@ func (alarm SlackAlarm) NotifyError(monitor monitors.Monitor) {
 	_, err := http.Post(alarm.WebhookUrl, "application/json", body)
 
 	if err != nil {
-		logger.Print("error while reporting to slack: %v")
+		logger.Printf("error while reporting to slack: %v", err)
 	}
 }

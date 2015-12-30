@@ -2,6 +2,7 @@
 
 build:
 	@go build -v ./...
+	@go vet -v ./...
 
 install:
 	go get github.com/tools/godep
