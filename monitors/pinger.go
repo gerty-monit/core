@@ -10,6 +10,7 @@ var interval = 30 * time.Second
 type Monitoreable interface {
 	GetGroups() []Group
 	Failed(Monitor)
+	Restored(Monitor)
 }
 
 func Ping(subject Monitoreable) chan interface{} {
@@ -53,7 +54,7 @@ func refresh(monitors []Monitor, subject Monitoreable) {
 
 		if AllOk(m) {
 			if m.IsTripped() {
-				logger.Printf("monitor %s - %s is back to normal", m.Name(), m.Description())
+				subject.Restored(m)
 				m.Untrip()
 			}
 		}

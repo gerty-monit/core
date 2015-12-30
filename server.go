@@ -32,6 +32,17 @@ func (server GertyServer) Failed(monitor m.Monitor) {
 	}
 }
 
+func (server GertyServer) Restored(monitor m.Monitor) {
+	if len(server.Alarms) == 0 {
+		return
+	}
+
+	logger.Printf("monitor %s is back to normal", monitor.Name())
+	for i, _ := range server.Alarms {
+		server.Alarms[i].NotifyRestore(monitor)
+	}
+}
+
 type GroupJson struct {
 	Name  string     `json:"name"`
 	Tiles []TileJson `json:"tiles"`

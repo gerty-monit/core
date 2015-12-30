@@ -54,3 +54,6 @@ func (alarm EmailAlarm) NotifyError(monitor monitors.Monitor) {
 		logger.Printf("error while sending the alarm email %v", err)
 	}
 }
+
+// TODO: create email template with restore message.
+func (alarm EmailAlarm) NotifyRestore(monitor monitors.Monitor) {}

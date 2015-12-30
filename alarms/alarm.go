@@ -11,4 +11,5 @@ var logger = log.New(os.Stdout, "", log.Ldate|log.Ltime|log.Lshortfile)
 type Alarm interface {
 	Name() string
 	NotifyError(monitors.Monitor)
+	NotifyRestore(monitors.Monitor)
 }
