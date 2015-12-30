@@ -14,11 +14,10 @@ var logger = log.New(os.Stdout, "", log.Ldate|log.Ltime|log.Lshortfile)
 type SuccessChecker func(*http.Response) bool
 
 type HttpMonitor struct {
-	title       string
-	description string
-	url         string
-	buffer      CircularBuffer
-	opts        *HttpMonitorOptions
+	*BaseMonitor
+	url    string
+	buffer CircularBuffer
+	opts   *HttpMonitorOptions
 }
 
 type HttpMonitorOptions struct {
@@ -68,7 +67,7 @@ func mergeHttpOpts(given *HttpMonitorOptions) *HttpMonitorOptions {
 func NewHttpMonitorWithOptions(title, description, url string, _opts *HttpMonitorOptions) *HttpMonitor {
 	opts := mergeHttpOpts(_opts)
 	buffer := NewCircularBuffer(opts.Checks)
-	return &HttpMonitor{title, description, url, buffer, opts}
+	return &HttpMonitor{NewBaseMonitor(title, description), url, buffer, opts}
 }
 
 func NewHttpMonitor(title, description, url string) *HttpMonitor {

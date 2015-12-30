@@ -7,12 +7,11 @@ import (
 )
 
 type TcpMonitor struct {
-	title       string
-	description string
-	host        string
-	port        int
-	buffer      CircularBuffer
-	opts        *TcpMonitorOptions
+	*BaseMonitor
+	host   string
+	port   int
+	buffer CircularBuffer
+	opts   *TcpMonitorOptions
 }
 
 type TcpMonitorOptions struct {
@@ -44,7 +43,7 @@ func mergeTcpOpts(given *TcpMonitorOptions) *TcpMonitorOptions {
 func NewTcpMonitorWithOptions(title, description, host string, port int, _opts *TcpMonitorOptions) *TcpMonitor {
 	opts := mergeTcpOpts(_opts)
 	buffer := NewCircularBuffer(opts.Checks)
-	return &TcpMonitor{title, description, host, port, buffer, opts}
+	return &TcpMonitor{NewBaseMonitor(title, description), host, port, buffer, opts}
 }
 
 func NewTcpMonitor(title, description, host string, port int) *TcpMonitor {
