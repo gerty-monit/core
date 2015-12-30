@@ -55,11 +55,19 @@ type Group struct {
 	Monitors []Monitor
 }
 
-func AllFailed(m Monitor) bool {
+func all(m Monitor, status int) bool {
 	for i := range m.Values() {
-		if m.Values()[i].Value != NOK {
+		if m.Values()[i].Value != status {
 			return false
 		}
 	}
 	return true
+}
+
+func AllFailed(m Monitor) bool {
+	return all(m, NOK)
+}
+
+func AllOk(m Monitor) bool {
+	return all(m, OK)
 }

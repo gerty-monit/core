@@ -45,8 +45,17 @@ func refresh(monitors []Monitor, subject Monitoreable) {
 	wg.Add(ns)
 	for _, m := range monitors {
 		check(m, &wg)
-		if AllFailed(m) {
+
+		if AllFailed(m) && !m.IsTripped() {
+			m.Trip()
 			go subject.Failed(m)
+		}
+
+		if AllOk(m) {
+			if m.IsTripped() {
+				logger.Printf("monitor %s - %s is back to normal", m.Name(), m.Description())
+				m.Untrip()
+			}
 		}
 	}
 	wg.Wait()
