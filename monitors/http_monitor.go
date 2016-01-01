@@ -9,6 +9,9 @@ import (
 	"time"
 )
 
+// ensure we always implement Monitor
+var _ Monitor = (*HttpMonitor)(nil)
+
 var logger = log.New(os.Stdout, "", log.Ldate|log.Ltime|log.Lshortfile)
 
 type SuccessChecker func(*http.Response) bool

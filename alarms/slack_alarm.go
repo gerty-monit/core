@@ -10,6 +10,9 @@ type SlackAlarm struct {
 	WebhookUrl string
 }
 
+// ensure we always implement Alarm
+var _ Alarm = (*SlackAlarm)(nil)
+
 func NewSlackAlarm(url string) *SlackAlarm {
 	return &SlackAlarm{url}
 }

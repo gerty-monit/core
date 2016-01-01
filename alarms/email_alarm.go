@@ -8,6 +8,9 @@ import (
 	"os"
 )
 
+// ensure we always implement Alarm
+var _ Alarm = (*EmailAlarm)(nil)
+
 var templateFile = os.Getenv("GOPATH") + "/src/github.com/gerty-monit/core/alarms/email_alarm.html"
 var tpl = template.Must(template.New("email_alarm.html").ParseFiles(templateFile))
 

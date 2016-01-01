@@ -19,6 +19,9 @@ type TcpMonitorOptions struct {
 	Timeout time.Duration
 }
 
+// ensure we always implement Monitor
+var _ Monitor = (*TcpMonitor)(nil)
+
 var DefaultTcpMonitorOptions = TcpMonitorOptions{
 	Checks:  5,
 	Timeout: 10 * time.Second,
