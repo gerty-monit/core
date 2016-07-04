@@ -1,19 +1,17 @@
 MIME-version: 1.0
 Content-Type: text/html;charset="UTF-8";
-From: {{ .From }}
-To: {{ .To }}
-Subject: [{{.MonitorName}}] has raised an alarm
+From: from@email.com
+To: to@email.com
+Subject: [failing-monitor] has raised an alarm
 
 <!doctype html>
 <html>
 <head>
 <meta name="viewport" content="width=device-width">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>{{.MonitorName}} has raised an alarm</title>
+<title>failing-monitor has raised an alarm</title>
 <style>
-/* -------------------------------------
-    GLOBAL
-------------------------------------- */
+ 
 * {
   font-family: "Helvetica Neue", "Helvetica", Helvetica, Arial, sans-serif;
   font-size: 100%;
@@ -35,9 +33,7 @@ body {
 }
 
 
-/* -------------------------------------
-    ELEMENTS
-------------------------------------- */
+ 
 a {
   color: #348eda;
 }
@@ -55,18 +51,14 @@ a {
 }
 
 
-/* -------------------------------------
-    BODY
-------------------------------------- */
+ 
 table.body-wrap {
   padding: 20px;
   width: 100%;
 }
 
 
-/* -------------------------------------
-    TYPOGRAPHY
-------------------------------------- */
+ 
 h1,
 h2,
 h3 {
@@ -101,11 +93,9 @@ ol li {
   list-style-position: inside;
 }
 
-/* ---------------------------------------------------
-    RESPONSIVENESS
------------------------------------------------------- */
+ 
 
-/* Set a max-width, and make it display as block so it will automatically stretch to that width, but will also shrink down on a phone or something */
+ 
 .container {
   clear: both !important;
   display: block !important;
@@ -113,19 +103,19 @@ ol li {
   max-width: 600px !important;
 }
 
-/* Set the padding on the td rather than the div for Outlook compatibility */
+ 
 .body-wrap .container {
   padding: 20px;
 }
 
-/* This should also be a block element, so that it will fill 100% of the .container */
+ 
 .content {
   display: block;
   margin: 0 auto;
   max-width: 600px;
 }
 
-/* Let's make sure tables in the content area are 100% wide */
+ 
 .content table {
   width: 100%;
 }
@@ -135,35 +125,35 @@ ol li {
 
 <body bgcolor="#f6f6f6">
 
-<!-- body -->
+
 <table class="body-wrap" bgcolor="#f6f6f6">
   <tr>
     <td></td>
     <td class="container" bgcolor="#FFFFFF">
 
-      <!-- content -->
+      
       <div class="content">
       <table>
         <tr>
           <td>
-            <h4> {{.MonitorName}}</h4>
+            <h4> failing-monitor</h4>
             <p></p>
             <pre>
-              {{.MonitorDescription}}
+              failing-monitor-description
             </pre>
 
-            <p>For more information check <a href="{{ .Site}}">your status page</a></p>
+            <p>For more information check <a href="http://example.com">your status page</a></p>
           </td>
         </tr>
       </table>
       </div>
-      <!-- /content -->
+      
 
     </td>
     <td></td>
   </tr>
 </table>
-<!-- /body -->
+
 
 </body>
 </html>

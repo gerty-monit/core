@@ -1,5 +1,10 @@
 .PHONY: install build test run clean-ts
 
+export CURRENT_DIRECTORY = $(shell pwd)
+
+where:
+	echo $(CURRENT_DIRECTORY)
+
 build:
 	@go build -v ./...
 	@go vet -v ./...
@@ -9,7 +14,12 @@ install:
 	godep restore
 
 test:
-	@go test ./...
+	@go test ./alarms
+	@go test ./monitors
+
+test-update-goldens:
+	@go test ./alarms -update=true
+	@go test ./monitors
 
 clean-ts:
 	rm -rf public/js/compiled
@@ -26,8 +36,12 @@ run: ts-compile
 
 test-cover:
 	@echo "mode: set" > acc.coverage-out
-	@go test -coverprofile=services.coverage-out ./services
-	@cat services.coverage-out | grep -v "mode: set" >> acc.coverage-out
+	@go test -coverprofile=monitors.coverage-out ./monitors
+	@touch monitors.coverage-out
+	@cat monitors.coverage-out | grep -v "mode: set" >> acc.coverage-out
+	@go test -coverprofile=alarms.coverage-out ./alarms
+	@touch alarms.coverage-out
+	@cat alarms.coverage-out | grep -v "mode: set" >> acc.coverage-out
 	@go tool cover -html=acc.coverage-out
 	@rm *.coverage-out
 
