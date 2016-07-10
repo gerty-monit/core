@@ -2,9 +2,6 @@
 
 export CURRENT_DIRECTORY = $(shell pwd)
 
-where:
-	echo $(CURRENT_DIRECTORY)
-
 build:
 	@go build -v ./...
 	@go vet -v ./...
