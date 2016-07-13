@@ -70,7 +70,7 @@ func (monitor *TcpMonitor) Check() int {
 }
 
 func (monitor *TcpMonitor) Values() []ValueWithTimestamp {
-	return monitor.buffer.Values
+	return monitor.buffer.GetValues()
 }
 
 func (monitor *TcpMonitor) Name() string {

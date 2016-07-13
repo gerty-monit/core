@@ -126,7 +126,7 @@ func (monitor *HttpMonitor) Check() int {
 }
 
 func (monitor *HttpMonitor) Values() []ValueWithTimestamp {
-	return monitor.buffer.Values
+	return monitor.buffer.GetValues()
 }
 
 func (monitor *HttpMonitor) Name() string {
