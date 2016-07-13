@@ -1,6 +1,9 @@
 package monitors
 
-import "testing"
+import (
+	"testing"
+	"testing/quick"
+)
 
 var cases = []struct {
 	name           string
@@ -11,6 +14,15 @@ var cases = []struct {
 	{"appending no elements should have length zero", []int{}, 5, 0},
 	{"appending few elements should have pararmeters length", []int{1, 2, 3, 4}, 5, 4},
 	{"appending more elements than capacity should have cap length", []int{1, 2, 3, 4}, 2, 2},
+}
+
+func containsAll(container, arr []int) bool {
+	for _, el := range arr {
+		if !contains(container, el) {
+			return false
+		}
+	}
+	return true
 }
 
 func contains(arr []int, i int) bool {
@@ -37,7 +49,6 @@ func TestCircularBufferAppending(t *testing.T) {
 		}
 
 		// sanity check: test all returned elements are present.
-
 		for _, r := range retrieved {
 			if !contains(c.arr, r.Value) {
 				t.Errorf("element %d was retrieved but was not present in original array (%v)", c.arr)
@@ -59,15 +70,28 @@ func TestShouldBeFineIfAllOk(t *testing.T) {
 	}
 }
 
-func TestShouldRemoveOldValues(t *testing.T) {
-	buffer := NewCircularBuffer(5)
-	values := []int{0, 0, 0, 0, 0, 0, 1, 0, 1, 0}
+func TestShouldBeQuick(t *testing.T) {
 
-	for _, val := range values {
-		buffer.Append(val)
+	f := func(gencap SmallInt, elementsToAdd []int) bool {
+		capacity := gencap.value
+		start := 0
+		if len(elementsToAdd)-capacity > 0 {
+			start = len(elementsToAdd) - capacity
+		}
+		expected := elementsToAdd[start:]
+		buffer := NewCircularBuffer(capacity)
+		for _, el := range elementsToAdd {
+			buffer.Append(el)
+		}
+
+		retrieved := []int{}
+		for _, v := range buffer.GetValues() {
+			retrieved = append(retrieved, v.Value)
+		}
+		return containsAll(retrieved, expected)
 	}
 
-	if buffer.All(0) {
-		t.Errorf("it shouldnt be all zeroes")
+	if err := quick.Check(f, nil); err != nil {
+		t.Errorf("error %v", err)
 	}
 }
