@@ -89,7 +89,7 @@ func addCookies(request *http.Request, cookies *[]http.Cookie) {
 	}
 }
 
-func (monitor *HttpMonitor) Check() int {
+func (monitor *HttpMonitor) Check() Result {
 	logger.Printf("checking monitor %s", monitor.Name())
 	client := http.Client{Timeout: monitor.opts.Timeout}
 

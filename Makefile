@@ -26,9 +26,6 @@ ts-compile: $(ts_files)
 ts-compile-watch: $(ts_files)
 	@tsc -w --noImplicitAny --jsx react --rootDir public/typescript --outDir public/js/compiled $?
 
-run: ts-compile
-	@go run *.go
-
 test-cover:
 	@echo "mode: set" > acc.coverage-out
 	@go test -coverprofile=gerty.coverage-out .

@@ -1,7 +1,9 @@
 package gerty
 
+type Result int
+
 const (
-	UN = iota
+	UN Result = iota
 	OK
 	NOK
 )
@@ -41,7 +43,7 @@ type Tripper interface {
 }
 
 type Stater interface {
-	Check() int
+	Check() Result
 	Values() []ValueWithTimestamp
 }
 
@@ -55,7 +57,7 @@ type Group struct {
 	Monitors []Monitor
 }
 
-func all(m Monitor, status int) bool {
+func all(m Monitor, status Result) bool {
 	for i := range m.Values() {
 		if m.Values()[i].Value != status {
 			return false

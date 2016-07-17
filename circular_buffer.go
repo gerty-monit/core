@@ -3,7 +3,7 @@ package gerty
 import "time"
 
 type ValueWithTimestamp struct {
-	Value     int
+	Value     Result
 	Timestamp int64
 }
 
@@ -18,7 +18,7 @@ func NewCircularBuffer(capacity int) CircularBuffer {
 	return CircularBuffer{sl, 0, capacity}
 }
 
-func (buf *CircularBuffer) Append(val int) {
+func (buf *CircularBuffer) Append(val Result) {
 
 	// hit the last value, start from zero.
 	if buf.next == cap(buf.values) {

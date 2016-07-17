@@ -11,12 +11,12 @@ var Group = (function (_super) {
     }
     Group.prototype.render = function () {
         var tiles = this.props.tiles.map(function (tile) {
-            return React.createElement(Tile, {"title": tile.title, "description": tile.description, "values": tile.values, "key": tile.title});
+            return React.createElement(Tile, {title: tile.title, description: tile.description, values: tile.values, key: tile.title});
         });
-        return (React.createElement("div", {"className": "row card blue-grey darken-3"}, React.createElement("div", {"className": "card-content"}, React.createElement("div", {"className": "card-title card-title-group grey-text"}, this.props.name), tiles)));
+        return (React.createElement("div", {className: "row card blue-grey darken-3"}, React.createElement("div", {className: "card-content"}, React.createElement("div", {className: "card-title card-title-group grey-text"}, this.props.name), tiles)));
     };
     return Group;
-})(React.Component);
+}(React.Component));
 var Tile = (function (_super) {
     __extends(Tile, _super);
     function Tile() {
@@ -32,7 +32,7 @@ var Tile = (function (_super) {
             className += " green accent-3";
         if (value.value === 2)
             className += " red pulse accent-1";
-        return React.createElement("li", {"key": key}, React.createElement("span", {"className": className, "title": ago}, " dot "));
+        return React.createElement("li", {key: key}, React.createElement("span", {className: className, title: ago}, " dot "));
     };
     Tile.prototype.render = function () {
         var dots = this.props.values
@@ -41,7 +41,7 @@ var Tile = (function (_super) {
         var failed = this.props.values.filter(function (it) { return it.value === 2; }).length;
         var allFailed = (failed === this.props.values.length);
         var tileClass = (allFailed) ? "red darken-2 card" : "teal darken-2 card";
-        return (React.createElement("div", {"className": "col s12 m6 l4"}, React.createElement("div", {"className": tileClass}, React.createElement("div", {"className": "card-content white-text"}, React.createElement("ol", null, dots), React.createElement("span", {"className": "card-title"}, this.props.title), React.createElement("p", null, this.props.description)))));
+        return (React.createElement("div", {className: "col s12 m6 l4"}, React.createElement("div", {className: tileClass}, React.createElement("div", {className: "card-content white-text"}, React.createElement("ol", null, dots), React.createElement("span", {className: "card-title"}, this.props.title), React.createElement("p", null, this.props.description)))));
     };
     return Tile;
-})(React.Component);
+}(React.Component));

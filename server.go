@@ -53,8 +53,8 @@ type TileJson struct {
 }
 
 type TileValue struct {
-	Value     int   `json:"value"`
-	Timestamp int64 `json:"timestamp"`
+	Value     Result `json:"value"`
+	Timestamp int64  `json:"timestamp"`
 }
 
 var appPath = os.Getenv("GOPATH") + "/src/github.com/gerty-monit/core"

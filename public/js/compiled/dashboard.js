@@ -22,9 +22,9 @@ var Dashboard = (function (_super) {
         });
     };
     Dashboard.prototype.render = function () {
-        var groups = this.state.groups.map(function (it) { return React.createElement(Group, {"name": it.name, "tiles": it.tiles, "key": it.name}); });
-        return (React.createElement("div", {"className": "container"}, React.createElement("div", {"className": "section"}, groups)));
+        var groups = this.state.groups.map(function (it) { return React.createElement(Group, {name: it.name, tiles: it.tiles, key: it.name}); });
+        return (React.createElement("div", {className: "container"}, React.createElement("div", {className: "section"}, groups)));
     };
     return Dashboard;
-})(React.Component);
-ReactDOM.render(React.createElement(Dashboard, {"interval": 5000}), document.getElementById('content'));
+}(React.Component));
+ReactDOM.render(React.createElement(Dashboard, {interval: 5000}), document.getElementById('content'));
