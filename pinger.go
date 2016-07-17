@@ -20,19 +20,22 @@ func Ping(subject Monitoreable) chan interface{} {
 		for {
 			select {
 			case <-ticker.C:
-				for _, g := range subject.GetGroups() {
-					refresh(g.Monitors, subject)
-				}
+				refreshGroups(subject)
 			case <-quit:
 				ticker.Stop()
 				return
 			}
 		}
 	}()
-	for _, g := range subject.GetGroups() {
-		refresh(g.Monitors, subject)
-	}
+	refreshGroups(subject)
 	return quit
+}
+
+func refreshGroups(subject Monitoreable) {
+	groups := subject.GetGroups()
+	for i := range groups {
+		refresh(groups[i].Monitors, subject)
+	}
 }
 
 func check(m Monitor, wg *sync.WaitGroup) {
@@ -41,23 +44,25 @@ func check(m Monitor, wg *sync.WaitGroup) {
 }
 
 func refresh(monitors []Monitor, subject Monitoreable) {
-	ns := len(monitors)
 	var wg sync.WaitGroup
-	wg.Add(ns)
-	for _, m := range monitors {
-		check(m, &wg)
+	wg.Add(len(monitors))
 
-		if AllFailed(m) && !m.IsTripped() {
-			m.Trip()
-			go subject.Failed(m)
-		}
+	for i := range monitors {
+		go func(i int) {
+			monitor := monitors[i]
+			check(monitor, &wg)
 
-		if AllOk(m) {
-			if m.IsTripped() {
-				subject.Restored(m)
-				m.Untrip()
+			if AllFailed(monitor) && !monitor.IsTripped() {
+				monitor.Trip()
+				go subject.Failed(monitor)
 			}
-		}
+
+			if AllOk(monitor) && monitor.IsTripped() {
+				monitor.Untrip()
+				go subject.Restored(monitor)
+			}
+		}(i)
 	}
+
 	wg.Wait()
 }
