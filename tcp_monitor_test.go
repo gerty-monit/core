@@ -1,4 +1,4 @@
-package monitors
+package gerty
 
 import (
 	"testing"

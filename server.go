@@ -2,8 +2,6 @@ package gerty
 
 import (
 	"encoding/json"
-	a "github.com/gerty-monit/core/alarms"
-	m "github.com/gerty-monit/core/monitors"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -13,15 +11,15 @@ import (
 var logger = log.New(os.Stdout, "", log.Ldate|log.Ltime|log.Lshortfile)
 
 type GertyServer struct {
-	Groups []m.Group
-	Alarms []a.Alarm
+	Groups []Group
+	Alarms []Alarm
 }
 
-func (server GertyServer) GetGroups() []m.Group {
+func (server GertyServer) GetGroups() []Group {
 	return server.Groups
 }
 
-func (server GertyServer) Failed(monitor m.Monitor) {
+func (server GertyServer) Failed(monitor Monitor) {
 	if len(server.Alarms) == 0 {
 		return
 	}
@@ -32,7 +30,7 @@ func (server GertyServer) Failed(monitor m.Monitor) {
 	}
 }
 
-func (server GertyServer) Restored(monitor m.Monitor) {
+func (server GertyServer) Restored(monitor Monitor) {
 	if len(server.Alarms) == 0 {
 		return
 	}
@@ -72,7 +70,7 @@ func HomePage(w http.ResponseWriter, r *http.Request) {
 	w.Write(bytes)
 }
 
-func createTileValues(checks []m.ValueWithTimestamp) []TileValue {
+func createTileValues(checks []ValueWithTimestamp) []TileValue {
 	values := []TileValue{}
 	for i := range checks {
 		values = append(values, TileValue{checks[i].Value, checks[i].Timestamp})
@@ -99,7 +97,7 @@ func MonitorApi(s *GertyServer) http.HandlerFunc {
 }
 
 func (server *GertyServer) ListenAndServe(address string) {
-	m.Ping(server)
+	Ping(server)
 	mux := http.NewServeMux()
 
 	statics := os.Getenv("GOPATH") + "/src/github.com/gerty-monit/core/public"

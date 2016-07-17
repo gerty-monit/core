@@ -1,18 +1,14 @@
-package monitors
+package gerty
 
 import (
 	"io"
-	"log"
 	"net/http"
-	"os"
 	"strings"
 	"time"
 )
 
 // ensure we always implement Monitor
 var _ Monitor = (*HttpMonitor)(nil)
-
-var logger = log.New(os.Stdout, "", log.Ldate|log.Ltime|log.Lshortfile)
 
 type SuccessChecker func(*http.Response) bool
 

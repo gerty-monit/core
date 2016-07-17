@@ -1,7 +1,6 @@
-package alarms
+package gerty
 
 import (
-	"github.com/gerty-monit/core/monitors"
 	"net/smtp"
 )
 
@@ -26,7 +25,7 @@ func (alarm EmailAlarm) Name() string {
 	return "Email Alarm"
 }
 
-func (alarm EmailAlarm) NotifyError(monitor monitors.Monitor) error {
+func (alarm EmailAlarm) NotifyError(monitor Monitor) error {
 	auth := smtp.PlainAuth("", alarm.User, alarm.Pass, alarm.Host)
 	data := emailContents{alarm.From, alarm.To, "http://status.galeno.omniasalud.com",
 		monitor.Name(), monitor.Description()}
@@ -49,6 +48,6 @@ func (alarm EmailAlarm) NotifyError(monitor monitors.Monitor) error {
 }
 
 // TODO: create email template with restore message.
-func (alarm EmailAlarm) NotifyRestore(monitor monitors.Monitor) error {
+func (alarm EmailAlarm) NotifyRestore(monitor Monitor) error {
 	return nil
 }

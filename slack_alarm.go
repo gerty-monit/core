@@ -1,7 +1,6 @@
-package alarms
+package gerty
 
 import (
-	"github.com/gerty-monit/core/monitors"
 	"net/http"
 	"strings"
 )
@@ -33,10 +32,10 @@ func (alarm *SlackAlarm) sendToSlack(message string) error {
 	return nil
 }
 
-func (alarm *SlackAlarm) NotifyError(monitor monitors.Monitor) error {
+func (alarm *SlackAlarm) NotifyError(monitor Monitor) error {
 	return alarm.sendToSlack(`{ "text": "` + monitor.Name() + ` has raised an alarm" }`)
 }
 
-func (alarm *SlackAlarm) NotifyRestore(monitor monitors.Monitor) error {
+func (alarm *SlackAlarm) NotifyRestore(monitor Monitor) error {
 	return alarm.sendToSlack(`{ "text": "` + monitor.Name() + ` is back to normal" }`)
 }

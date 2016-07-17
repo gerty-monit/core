@@ -3,20 +3,18 @@
 export CURRENT_DIRECTORY = $(shell pwd)
 
 build:
-	@go build -v ./...
-	@go vet -v ./...
+	@go build -v .
+	@go vet -v .
 
 install:
 	go get github.com/tools/godep
 	godep restore
 
 test:
-	@go test ./alarms
-	@go test ./monitors
+	@go test .
 
 test-update-goldens:
-	@go test ./alarms -update=true
-	@go test ./monitors
+	@go test . -update=true
 
 clean-ts:
 	rm -rf public/js/compiled
@@ -33,12 +31,9 @@ run: ts-compile
 
 test-cover:
 	@echo "mode: set" > acc.coverage-out
-	@go test -coverprofile=monitors.coverage-out ./monitors
-	@touch monitors.coverage-out
-	@cat monitors.coverage-out | grep -v "mode: set" >> acc.coverage-out
-	@go test -coverprofile=alarms.coverage-out ./alarms
-	@touch alarms.coverage-out
-	@cat alarms.coverage-out | grep -v "mode: set" >> acc.coverage-out
+	@go test -coverprofile=gerty.coverage-out .
+	@touch gerty.coverage-out
+	@cat gerty.coverage-out | grep -v "mode: set" >> acc.coverage-out
 	@go tool cover -html=acc.coverage-out
 	@rm *.coverage-out
 
