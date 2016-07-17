@@ -16,25 +16,7 @@ var cases = []struct {
 	{"appending more elements than capacity should have cap length", []int{1, 2, 3, 4}, 2, 2},
 }
 
-func containsAll(container, arr []int) bool {
-	for _, el := range arr {
-		if !contains(container, el) {
-			return false
-		}
-	}
-	return true
-}
-
-func contains(arr []int, i int) bool {
-	for _, j := range arr {
-		if i == j {
-			return true
-		}
-	}
-	return false
-}
-
-func TestCircularBufferAppending(t *testing.T) {
+func TestCircularBufferLength(t *testing.T) {
 	for _, c := range cases {
 		buffer := NewCircularBuffer(c.capacity)
 		for _, v := range c.arr {
@@ -70,7 +52,25 @@ func TestShouldBeFineIfAllOk(t *testing.T) {
 	}
 }
 
-func TestShouldBeQuick(t *testing.T) {
+func containsAll(container, arr []int) bool {
+	for _, el := range arr {
+		if !contains(container, el) {
+			return false
+		}
+	}
+	return true
+}
+
+func contains(arr []int, i int) bool {
+	for _, j := range arr {
+		if i == j {
+			return true
+		}
+	}
+	return false
+}
+
+func TestShouldAlwaysReturnLastAppendedValues(t *testing.T) {
 
 	f := func(gencap SmallInt, elementsToAdd []int) bool {
 		capacity := gencap.value
