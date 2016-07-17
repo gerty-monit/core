@@ -72,11 +72,3 @@ func (monitor *TcpMonitor) Check() Result {
 func (monitor *TcpMonitor) Values() []ValueWithTimestamp {
 	return monitor.buffer.GetValues()
 }
-
-func (monitor *TcpMonitor) Name() string {
-	return monitor.title
-}
-
-func (monitor *TcpMonitor) Description() string {
-	return monitor.description
-}
