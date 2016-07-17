@@ -33,28 +33,15 @@ func TestCircularBufferLength(t *testing.T) {
 		// sanity check: test all returned elements are present.
 		for _, r := range retrieved {
 			if !contains(c.arr, r.Value) {
-				t.Errorf("element %d was retrieved but was not present in original array (%v)", c.arr)
+				t.Errorf("element %d was retrieved but was not present in original array (%v)", r.Value, c.arr)
 			}
 		}
 	}
 }
 
-func TestShouldBeFineIfAllOk(t *testing.T) {
-	buffer := NewCircularBuffer(5)
-	values := []int{0, 0, 0, 0, 0}
-
-	for _, val := range values {
-		buffer.Append(val)
-	}
-
-	if buffer.All(0) == false {
-		t.Errorf("it should be all zeroes")
-	}
-}
-
 func containsAll(container, arr []int) bool {
-	for _, el := range arr {
-		if !contains(container, el) {
+	for i := range arr {
+		if !contains(container, arr[i]) {
 			return false
 		}
 	}

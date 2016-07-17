@@ -18,14 +18,6 @@ func NewCircularBuffer(capacity int) CircularBuffer {
 	return CircularBuffer{sl, 0, capacity}
 }
 
-func (buf *CircularBuffer) All(value int) bool {
-	ok := true
-	for _, val := range buf.values {
-		ok = ok && (val.Value == value)
-	}
-	return ok
-}
-
 func (buf *CircularBuffer) Append(val int) {
 
 	// hit the last value, start from zero.
