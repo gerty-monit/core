@@ -15,7 +15,7 @@ type emailContents struct {
 }
 
 var (
-	file = os.Getenv("GOPATH") + "/src/github.com/gerty-monit/core/alarms/email_alarm.html"
+	file = os.Getenv("GOPATH") + "/src/github.com/gerty-monit/core/email-templates/email_alarm.html"
 	tpl  = template.Must(template.New("email_alarm.html").ParseFiles(file))
 )
 
