@@ -12,13 +12,13 @@ type Describer interface {
 }
 
 type BaseMonitor struct {
-	title       string
+	name        string
 	description string
 	tripped     bool
 }
 
-func NewBaseMonitor(title, description string) *BaseMonitor {
-	return &BaseMonitor{title, description, false}
+func NewBaseMonitor(name, description string) *BaseMonitor {
+	return &BaseMonitor{name, description, false}
 }
 
 func (m *BaseMonitor) Trip() {
@@ -34,7 +34,7 @@ func (m *BaseMonitor) IsTripped() bool {
 }
 
 func (monitor *BaseMonitor) Name() string {
-	return monitor.title
+	return monitor.name
 }
 
 func (monitor *BaseMonitor) Description() string {
