@@ -7,13 +7,13 @@ import (
 
 var cases = []struct {
 	name           string
-	arr            []int
+	arr            []Result
 	capacity       int
 	expectedLength int
 }{
-	{"appending no elements should have length zero", []int{}, 5, 0},
-	{"appending few elements should have pararmeters length", []int{1, 2, 3, 4}, 5, 4},
-	{"appending more elements than capacity should have cap length", []int{1, 2, 3, 4}, 2, 2},
+	{"appending no elements should have length zero", []Result{}, 5, 0},
+	{"appending few elements should have pararmeters length", []Result{OK, NOK, OK, OK}, 5, 4},
+	{"appending more elements than capacity should have cap length", []Result{OK, OK, OK, NOK}, 2, 2},
 }
 
 func TestCircularBufferLength(t *testing.T) {
@@ -39,7 +39,7 @@ func TestCircularBufferLength(t *testing.T) {
 	}
 }
 
-func containsAll(container, arr []int) bool {
+func containsAll(container, arr []Result) bool {
 	for i := range arr {
 		if !contains(container, arr[i]) {
 			return false
@@ -48,7 +48,7 @@ func containsAll(container, arr []int) bool {
 	return true
 }
 
-func contains(arr []int, i int) bool {
+func contains(arr []Result, i Result) bool {
 	for _, j := range arr {
 		if i == j {
 			return true
@@ -59,7 +59,7 @@ func contains(arr []int, i int) bool {
 
 func TestShouldAlwaysReturnLastAppendedValues(t *testing.T) {
 
-	f := func(gencap SmallInt, elementsToAdd []int) bool {
+	f := func(gencap SmallInt, elementsToAdd []Result) bool {
 		capacity := gencap.value
 		start := 0
 		if len(elementsToAdd)-capacity > 0 {
@@ -71,7 +71,7 @@ func TestShouldAlwaysReturnLastAppendedValues(t *testing.T) {
 			buffer.Append(el)
 		}
 
-		retrieved := []int{}
+		retrieved := []Result{}
 		for _, v := range buffer.GetValues() {
 			retrieved = append(retrieved, v.Value)
 		}
