@@ -29,7 +29,7 @@ func all(m Monitor, status Result) bool {
 			return false
 		}
 	}
-	return true
+	return len(m.Values()) > 0
 }
 
 func AllFailed(m Monitor) bool {
