@@ -3,8 +3,7 @@ package gerty
 type Result int
 
 const (
-	UN Result = iota
-	OK
+	OK Result = iota
 	NOK
 )
 

@@ -29,9 +29,8 @@ class Tile extends React.Component<Model.Tile, any> {
     const ago = moment.unix(value.timestamp).fromNow();
     const key = 'dot-' + index;
     var className = 'dot tooltipped new-item'
-    if (value.value === 0) className += " hide";
-    if (value.value === 1) className += " green accent-3";
-    if (value.value === 2) className += " red pulse accent-1";
+    if (value.value === 0) className += " green accent-3";
+    if (value.value === 1) className += " red pulse accent-1";
     return <li key={ key }><span className={className} title={ago} > dot </span></li>
   }
 
@@ -40,7 +39,7 @@ class Tile extends React.Component<Model.Tile, any> {
       .sort((a, b) => b.timestamp - a.timestamp)
       .map(this.createTile)
 
-    const failed = this.props.values.filter(it => it.value === 2).length;
+    const failed = this.props.values.filter(it => it.value === 1).length;
     const allFailed = (failed === this.props.values.length);
     const tileClass = (allFailed) ? "red darken-2 card" : "teal darken-2 card"
 
