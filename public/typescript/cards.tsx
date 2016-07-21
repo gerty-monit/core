@@ -40,7 +40,7 @@ class Tile extends React.Component<Model.Tile, any> {
       .map(this.createTile)
 
     const failed = this.props.values.filter(it => it.value === 1).length;
-    const allFailed = (failed === this.props.values.length);
+    const allFailed = (failed !== 0 && failed === this.props.values.length);
     const tileClass = (allFailed) ? "red darken-2 card" : "teal darken-2 card"
 
     return (
