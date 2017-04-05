@@ -27,7 +27,7 @@ func (alarm EmailAlarm) Name() string {
 
 func (alarm EmailAlarm) NotifyError(monitor Monitor) error {
 	auth := smtp.PlainAuth("", alarm.User, alarm.Pass, alarm.Host)
-	data := emailContents{alarm.From, alarm.To, "http://status.galeno.omniasalud.com",
+	data := emailContents{alarm.From, alarm.To, alarm.Home,
 		monitor.Name(), monitor.Description()}
 
 	bytes, err := EmailTemplate(data)
